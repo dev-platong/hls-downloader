@@ -10,6 +10,7 @@ import os
 import shutil
 import sys
 from collections import defaultdict
+from functools import reduce
 
 if sys.version_info.major == 2:
     import urlparse  # Python 2.x
@@ -61,7 +62,7 @@ def download_files_from_playlist(m3u8list: m3u8.M3U8) -> None:
     DOWNLOADER.download_many(m3u8list.segments)
 
 
-def process_playlist_by_uri(absolute_uri):
+def process_playlist_by_uri(absolute_uri) -> str:
     """
     Download and process m3u8 playlist
     :type absolute_uri: Text
@@ -75,6 +76,9 @@ def process_playlist_by_uri(absolute_uri):
         pl_content = pl_f.read().strip()
 
     media_playlist = m3u8.M3U8(content=pl_content, base_uri=base_uri, strict=True)
+
+    if len(media_playlist.segments) != 0:
+        print("Playlist has time: ", reduce(lambda a,b: a+b, [segment.duration for segment in media_playlist.segments]))
 
     download_files_from_playlist(media_playlist)
     return filename
