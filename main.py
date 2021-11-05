@@ -78,7 +78,7 @@ def process_playlist_by_uri(absolute_uri):
 
     with codecs.open(filename, mode="rb", encoding="utf-8") as pl_f:
         pl_content = pl_f.read().strip()
-    media_playlist = m3u8.M3U8(content=pl_content, base_uri=base_uri)
+    media_playlist = m3u8.M3U8(content=pl_content, base_uri=base_uri, strict=True)
 
     download_files_from_playlist(media_playlist)
     return filename
