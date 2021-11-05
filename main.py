@@ -30,12 +30,7 @@ DOWNLOADER = None  # Instance of downloader.Downloader
 DESCRIPTION = defaultdict(list)
 
 
-def download_files_from_playlist(m3u8list):
-    """
-    Get all content from m3u8 playlist
-    :type m3u8list: m3u8.M3U8
-    :rtype: None
-    """
+def download_files_from_playlist(m3u8list: m3u8.M3U8) -> None:
     for media in m3u8list.media:
         if media.absolute_uri:
             DESCRIPTION["MEDIA." + media.type].append(media.absolute_uri)
@@ -78,19 +73,14 @@ def process_playlist_by_uri(absolute_uri):
 
     with codecs.open(filename, mode="rb", encoding="utf-8") as pl_f:
         pl_content = pl_f.read().strip()
+
     media_playlist = m3u8.M3U8(content=pl_content, base_uri=base_uri, strict=True)
 
     download_files_from_playlist(media_playlist)
     return filename
 
 
-def process_main_playlist(url_to_m3u8):
-    """
-    Process main playlist and save it to main.m3u8
-    Additional information to description.json
-    :type url_to_m3u8: Text
-    :rtype: None
-    """
+def process_main_playlist(url_to_m3u8: str) -> None:
     DESCRIPTION["origin_url"] = url_to_m3u8
 
     main_list_filename = process_playlist_by_uri(url_to_m3u8)
@@ -112,14 +102,7 @@ def process_main_playlist(url_to_m3u8):
         logging.info("Copied %s -> %s", main_list_filename, os.path.join(main_list_dir, "main.m3u8"))
 
 
-def main(url_to_m3u8, download_dir, verbose, ignore_ssl):
-    """
-    :type url_to_m3u8: str
-    :type download_dir: str
-    :type verbose: bool
-    :type ignore_ssl: bool
-    :rtype: None
-    """
+def main(url_to_m3u8:str, download_dir:str, verbose:bool, ignore_ssl:bool) -> None:
     http_settings = dict(
         headers={
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6)"
@@ -137,10 +120,7 @@ def main(url_to_m3u8, download_dir, verbose, ignore_ssl):
     process_main_playlist(url_to_m3u8)
 
 
-def parse_args():
-    """
-    :rtype: dict
-    """
+def parse_args() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("url_to_m3u8", help="Url to main.m3u8")
     parser.add_argument("download_dir", help="Path to save files")
